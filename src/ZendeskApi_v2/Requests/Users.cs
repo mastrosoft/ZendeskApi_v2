@@ -33,8 +33,8 @@ namespace ZendeskApi_v2.Requests {
         GroupUserResponse SearchByPhone(string phone);
         GroupUserResponse SearchByCustomUserField(string fieldKey, string fieldValue);
 		GroupUserResponse SearchByExternalId(string externalId);
-        GroupUserResponse GetUsersInGroup(long id);
-        GroupUserResponse GetUsersInOrganization(long id);
+        GroupUserResponse GetUsersInGroup(long id, long? page = null);
+        GroupUserResponse GetUsersInOrganization(long id, long? page = null);
 		IndividualUserResponse CreateUser(User user);
 		JobStatusResponse BulkCreateUsers(IEnumerable<User> users);
 		IndividualUserResponse SuspendUser(long id);
@@ -160,14 +160,24 @@ namespace ZendeskApi_v2.Requests {
             return GenericGet<GroupUserResponse>(string.Format("users/search.json?external_id={0}", externalId));
         }
 
-        public GroupUserResponse GetUsersInGroup(long id)
+        public GroupUserResponse GetUsersInGroup(long id, long? page = null)
         {
-            return GenericGet<GroupUserResponse>(string.Format("groups/{0}/users.json", id));
+            string param = null;
+            if (page.HasValue)
+            {
+                param = "page=" + page;
+            }
+            return GenericGet<GroupUserResponse>(string.Format("groups/{0}/users.json?" + param, id));
         }
 
-        public GroupUserResponse GetUsersInOrganization(long id)
+        public GroupUserResponse GetUsersInOrganization(long id, long? page = null)
         {
-            return GenericGet<GroupUserResponse>(string.Format("organizations/{0}/users.json", id));
+            string param = null;
+            if (page.HasValue)
+            {
+                param = "page=" + page;   
+            }
+            return GenericGet<GroupUserResponse>(string.Format("organizations/{0}/users.json?" + param, id));
         }
 
         public IndividualUserResponse CreateUser(User user)
